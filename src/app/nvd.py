@@ -45,9 +45,9 @@ class NVD:
             cve_dict = json.loads(jsonfile.read())
             cve_desc = ""
             cvssv3_score = 0
-            cvssv3_secerity = ""
+            cvssv3_severity = ""
             cvssv2_score = 0
-            cvssv2_secerity = ""
+            cvssv2_severity = ""
             # Iterate through each CVE in the feed
             last_execute_date = self.get_last_execute_date()
             for cve in cve_dict["CVE_Items"]:
@@ -61,14 +61,14 @@ class NVD:
                             cve_desc = cve_desc_item["value"]
                     if "baseMetricV3" in cve["impact"]:
                         cvssv3_score = cve["impact"]["baseMetricV3"]["cvssV3"]["baseScore"]
-                        cvssv3_secerity = cve["impact"]["baseMetricV3"]["cvssV3"]["baseSeverity"]
+                        cvssv3_severity = cve["impact"]["baseMetricV3"]["cvssV3"]["baseSeverity"]
                     if "baseMetricV2" in cve["impact"]:
                         cvssv2_score = cve["impact"]["baseMetricV2"]["cvssV2"]["baseScore"]
-                        cvssv2_secerity= cve["impact"]["baseMetricV2"]["severity"]
+                        cvssv2_severity= cve["impact"]["baseMetricV2"]["severity"]
                     # Parse out the vendors and products
                     vendors = self.convert_cpes(cve["configurations"])
-                    self.logger.log(logging.INFO, "ID={}; Publish Date={}; Description={}; CVSSv3 Score={}; CVSSv3 Severity={}; CVSSv2 Score={}; CVSSv3 Severity={}; Vendors={}".format(cve_id, cve_publish_date, cve_desc,
-                    cvssv3_score, cvssv3_secerity, cvssv2_score, cvssv2_secerity, str(vendors)))
+                    self.logger.log(logging.INFO, "ID={}; Publish Date={}; Description={}; CVSSv3 Score={}; CVSSv3 Severity={}; CVSSv2 Score={}; CVSSv2 Severity={}; Vendors={}".format(cve_id, cve_publish_date, cve_desc,
+                    cvssv3_score, cvssv3_severity, cvssv2_score, cvssv2_severity, str(vendors)))
             self.add_execute_date()
         except Exception as e:
              self.logger.log(logging.ERROR, e)
@@ -95,7 +95,7 @@ class NVD:
 
     def is_new_cve(self, last_modified_date, last_execute_date):
         last_modified_date = datetime.strptime(last_modified_date, '%Y-%m-%dT%H:%MZ')
-        last_execute_date = datetime.strptime(last_execute_date, '%Y-%m-%dT%H:%MZ')
+        last_execute_date = datetime.strptime(last_execute_date.strip("\n"), '%Y-%m-%dT%H:%MZ')
         if last_modified_date > last_execute_date:
             return True
         else:
@@ -111,4 +111,5 @@ class NVD:
     def add_execute_date(self):
         with open(self.execute_dates, "a") as file_object:
             file_object.write(datetime.now().strftime("%Y-%m-%dT%H:%MZ"))
+            file_object.write("\n")
     
