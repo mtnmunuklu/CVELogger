@@ -19,7 +19,7 @@ class Logger:
         self.log_dir = Config.LOG_DIR
         self.log_file_prefix = Config.LOG_FILE_PREFIX
         today = datetime.now()
-        self.log_file_name = self.log_dir + self.log_file_prefix + "-" + today.strftime("%Y%m%d")
+        self.log_file_name = self.log_dir + self.log_file_prefix + "-" + today.strftime("%Y%m%d") + ".log"
         self.log_format = Config.LOG_FORMAT
         self.close_log()
         self.logger = self.get_log_config()

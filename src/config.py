@@ -20,5 +20,6 @@ class Config:
     NVD_CVE_FILE_POSTFIX = os.getenv('NVD_CVE_FILE_POSTFIX')
     NVD_CVE_FILE_EXTENSION = os.getenv('NVD_CVE_FILE_EXTENSION')
     DOWNLOADED_DIR = os.getenv('DOWNLOADED_DIR')
+    EXECUTE_DATES = os.getenv('EXECUTE_DATES')
 
 
